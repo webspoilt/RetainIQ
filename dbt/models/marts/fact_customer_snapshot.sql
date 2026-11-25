@@ -1,0 +1,20 @@
+SELECT
+    customer_id,
+    MD5(contract) AS contract_key,
+    MD5(payment_method) AS payment_method_key,
+    MD5(tenure_bucket) AS tenure_bucket_key,
+    gender,
+    senior_citizen,
+    partner,
+    dependents,
+    tenure,
+    internet_service,
+    has_tech_support,
+    has_online_security,
+    monthly_revenue_proxy,
+    total_revenue,
+    churn,
+    churn_flag,
+    is_active,
+    high_monthly_charge_flag
+FROM {{ ref('int_customer_features') }}

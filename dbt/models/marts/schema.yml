@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: dim_contract
+    columns:
+      - name: contract_key
+        tests: [unique, not_null]
+  - name: dim_payment_method
+    columns:
+      - name: payment_method_key
+        tests: [unique, not_null]
+  - name: dim_tenure_bucket
+    columns:
+      - name: tenure_bucket_key
+        tests: [unique, not_null]
+  - name: fact_customer_snapshot
+    description: "Star-schema fact table: one row per customer in snapshot."
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]
+      - name: contract_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_contract')
+              field: contract_key
+      - name: payment_method_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_payment_method')
+              field: payment_method_key
+      - name: tenure_bucket_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_tenure_bucket')
+              field: tenure_bucket_key
+  - name: mart_retention_actions
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]

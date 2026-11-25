@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Cleaned and type-cast staging model of raw Telco customer snapshot."
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: churn
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Yes', 'No']
+      - name: contract
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Month-to-month', 'One year', 'Two year']
+      - name: payment_method
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Electronic check', 'Mailed check', 'Bank transfer (automatic)', 'Credit card (automatic)']
+      - name: tenure
+        tests:
+          - not_null
