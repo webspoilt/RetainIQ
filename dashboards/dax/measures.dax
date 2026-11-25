@@ -1,0 +1,51 @@
+// RetainIQ DAX Measures for Power BI Semantic Model
+
+Total Customers = COUNTROWS(fact_customer_snapshot)
+
+Active Customers = 
+CALCULATE(
+    COUNTROWS(fact_customer_snapshot),
+    fact_customer_snapshot[is_active] = TRUE()
+)
+
+Historical Churned Customers = 
+CALCULATE(
+    COUNTROWS(fact_customer_snapshot),
+    fact_customer_snapshot[churn] = "Yes"
+)
+
+Historical Churn Rate = 
+DIVIDE([Historical Churned Customers], [Total Customers], 0)
+
+Monthly Charge Revenue Proxy = 
+SUM(fact_customer_snapshot[monthly_revenue_proxy])
+
+Historical Churned Monthly Charges = 
+CALCULATE(
+    SUM(fact_customer_snapshot[monthly_revenue_proxy]),
+    fact_customer_snapshot[churn] = "Yes"
+)
+
+Average Revenue Per Active User = 
+DIVIDE(
+    CALCULATE(
+        SUM(fact_customer_snapshot[monthly_revenue_proxy]),
+        fact_customer_snapshot[is_active] = TRUE()
+    ),
+    [Active Customers],
+    0
+)
+
+High Risk Active Customers = 
+CALCULATE(
+    COUNTROWS(customer_risk_scores),
+    customer_risk_scores[is_active] = TRUE(),
+    customer_risk_scores[risk_tier] IN {"Critical", "High"}
+)
+
+Estimated Monthly Charges Exposed = 
+CALCULATE(
+    SUM(customer_risk_scores[monthly_revenue_proxy]),
+    customer_risk_scores[is_active] = TRUE(),
+    customer_risk_scores[risk_tier] IN {"Critical", "High"}
+)

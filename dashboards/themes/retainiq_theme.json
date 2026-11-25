@@ -1,0 +1,14 @@
+{
+  "name": "RetainIQ Enterprise Theme",
+  "dataColors": [
+    "#1E3A8A",
+    "#2563EB",
+    "#0D9488",
+    "#F59E0B",
+    "#DC2626",
+    "#64748B"
+  ],
+  "background": "#F8FAFC",
+  "foreground": "#0F172A",
+  "tableAccent": "#1E3A8A"
+}
