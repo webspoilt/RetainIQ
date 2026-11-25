@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: retainiq_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-retention_analytics}
+      POSTGRES_USER: ${POSTGRES_USER:-retainiq}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-retainiq_local_dev}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-retainiq} -d ${POSTGRES_DB:-retention_analytics}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: retainiq_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-retention_analytics}
+      POSTGRES_USER: ${POSTGRES_USER:-retainiq}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-retainiq_local_dev}
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
