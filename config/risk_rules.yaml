@@ -1,0 +1,35 @@
+# RetainIQ Customer Risk Scoring Rules
+# Transparent, configurable business-rule weights (not ML probabilities).
+# Total possible score: 90
+
+version: "1.0.0"
+
+weights:
+  month_to_month_contract: 25
+  tenure_below_3_months: 20
+  electronic_check_payment: 15
+  no_tech_support: 10
+  no_online_security: 10
+  high_monthly_charges: 10
+
+thresholds:
+  tenure_short_months: 3
+  high_monthly_charge_percentile: 75
+
+risk_tiers:
+  critical:
+    min_score: 70
+    priority: "P1 - Immediate"
+    action: "Assign senior Account Manager for immediate outreach; offer contract-upgrade incentive and onboarding/tech-support review."
+  high:
+    min_score: 50
+    priority: "P2 - High"
+    action: "Schedule proactive Customer Success check-in within 7 days; evaluate autopay migration and service bundle options."
+  medium:
+    min_score: 30
+    priority: "P3 - Monitor"
+    action: "Include in automated lifecycle engagement; highlight security and support add-on value."
+  low:
+    min_score: 0
+    priority: "P4 - Standard"
+    action: "Maintain standard account nurture and periodic satisfaction check-ins."
